@@ -6,10 +6,11 @@ class FourColumns
   require 'active_support/core_ext/string'
   require 'active_support/core_ext/date/calculations'
   require 'active_support/core_ext/date_time/calculations'
-  
+
   def initialize
     @sixty_jia_zhi = nil
-    @base_date     = '2017-02-06'.to_date
+    @base_year    = 1984
+    @base_day     = '2017-02-06'.to_date
     @target_date   = Date.current
 
     @columns = {
@@ -22,7 +23,7 @@ class FourColumns
 
   def convert_from_date(date)
     @target_date = date.to_date
-    # calculate_year_column
+    calculate_year_column
     # calculate_month_column
     calculate_day_column
     # caluclate_time_column
@@ -43,8 +44,13 @@ class FourColumns
     ]
   end
 
+  def calculate_year_column
+    offset = (@target_date.year - @base_year).to_i % 60
+    @columns[:year] = sixty_jia_zhi[offset]
+  end
+
   def calculate_day_column
-    offset = (@target_date.to_date - @base_date).to_i % 60
+    offset = (@target_date - @base_day).to_i % 60
     @columns[:day] = sixty_jia_zhi[offset]
   end
 end
