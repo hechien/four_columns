@@ -2,10 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 class FourColumns
-  require 'active_support'
-  require 'active_support/core_ext/string'
-  require 'active_support/core_ext/date/calculations'
-  require 'active_support/core_ext/date_time/calculations'
+  require 'active_support/all'
 
   def initialize
     @sixty_jia_zhi = nil
