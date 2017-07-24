@@ -3,12 +3,14 @@ require 'bundler/setup'
 
 class FourColumns
   require 'active_support/all'
+  require 'json'
 
   def initialize
     @sixty_jia_zhi = nil
     @base_year    = 1984
     @base_day     = '2017-02-06'.to_date
     @target_date   = Date.current
+    @solar_terms_json = JSON.parse(File.open('config/solar_terms.json').read)
 
     @columns = {
       year: nil,
@@ -19,7 +21,7 @@ class FourColumns
   end
 
   def convert_from_date(date)
-    @target_date = date.to_date
+    @target_date = date.to_datetime
     calculate_year_column
     # calculate_month_column
     calculate_day_column
@@ -41,8 +43,17 @@ class FourColumns
     ]
   end
 
+  def check_correct_year
+    current_year = @target_date.year
+    li_chun = @solar_terms_json[current_year.to_s]["立春"]
+    return current_year if li_chun <= @target_date
+    return current_year - 1
+  end
+
   def calculate_year_column
-    offset = (@target_date.year - @base_year).to_i % 60
+    year = check_correct_year
+
+    offset = (year - @base_year).to_i % 60
     @columns[:year] = sixty_jia_zhi[offset]
   end
 
